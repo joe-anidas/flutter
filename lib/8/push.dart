@@ -3,6 +3,14 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
+// //Update pubspec.yaml 
+
+// dependencies:
+//   flutter:
+//     sdk: flutter
+//   firebase_messaging: ^12.0.1
+//   http: ^0.13.3
+
 void main() {
   runApp(MyApp());
 }

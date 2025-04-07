@@ -9,8 +9,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
-  firebase_messaging: ^12.0.1
   http: ^0.13.3
 
 
