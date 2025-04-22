@@ -1,0 +1,331 @@
+dependencies:
+  flutter:
+    sdk: flutter
+  sqflite: ^2.3.0
+  path_provider: ^2.1.2
+  path: ^1.9.0
+
+
+Create an Android Studio project named "LibraryMgmtSystem."
+Design the layout in activity_main.xml with EditText, Buttons (save, view, update, delete, borrow, return), and TextView.
+Initialize DB objects in MainActivity.java.
+Implement the save method to add book details to the database.
+Implement the retrieve method to fetch book details based on book name.
+Implement the update method to change the book's author based on the book name.
+Implement the delete method to remove a book entry based on the book name.
+Implement borrow and return methods to update issued/available books and display them in Toast messages.
+Set up DB.java for CRUD operations and run the application on the emulator for testing.
+
+PROGRAM:
+activity_main.xml 
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Book Name -->
+    <EditText
+        android:id="@+id/editTextBookName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Book Name"
+        android:inputType="textPersonName" 
+android:layout_marginTop="160dp" />
+
+    <!-- Author -->
+    <EditText
+        android:id="@+id/editTextAuthor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Author"
+        android:inputType="textPersonName" />
+
+    <!-- Save Button -->
+    <Button
+        android:id="@+id/buttonSave"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="SAVE"
+        android:onClick="sav" />
+
+    <!-- Book Name for View -->
+    <EditText
+        android:id="@+id/editTextViewBookName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Book Name"
+        android:inputType="textPersonName" />
+
+    <!-- View Button -->
+    <Button
+        android:id="@+id/buttonView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="VIEW"
+        android:onClick="retrieve" />
+
+    <!-- TextView to display author -->
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="" />
+
+    <!-- Book Name for Update -->
+    <EditText
+        android:id="@+id/editTextUpdateBookName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Book Name"
+        android:inputType="textPersonName" />
+
+    <!-- Author for Update -->
+    <EditText
+        android:id="@+id/editTextUpdateAuthor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Author"
+        android:inputType="textPersonName" />
+
+    <!-- Update Button -->
+    <Button
+        android:id="@+id/buttonUpdate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="UPDATE"
+        android:onClick="update" />
+
+    <!-- Book Name for Delete -->
+    <EditText
+        android:id="@+id/editTextDeleteBookName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Book Name"
+        android:inputType="textPersonName" />
+
+    <!-- Delete Button -->
+    <Button
+        android:id="@+id/buttonDelete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="DELETE"
+        android:onClick="delete" />
+
+    <!-- Borrow/Return Section -->
+    <TextView
+        android:id="@+id/textViewBorrowReturn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Book Borrow and Return"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/editTextBorrowBookName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Book Name"
+        android:inputType="textPersonName" />
+
+    <!-- Borrow Button -->
+    <Button
+        android:id="@+id/buttonBorrow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="BORROW"
+        android:onClick="borrow" />
+
+    <!-- Return Button -->
+    <Button
+        android:id="@+id/buttonReturn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="RETURN"
+        android:onClick="returnbook" />
+
+</LinearLayout>
+
+MainActivity.java 
+package com.example.librarymgmtsystem;
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+import androidx.appcompat.app.AppCompatActivity;
+
+public class MainActivity extends AppCompatActivity {
+
+   // UI elements
+   EditText editTextBookName, editTextAuthor, editTextViewBookName, editTextUpdateBookName, editTextUpdateAuthor, editTextDeleteBookName, editTextBorrowBookName;
+   Button buttonSave, buttonView, buttonUpdate, buttonDelete, buttonBorrow, buttonReturn;
+   TextView textView;
+
+   // Available and Issued Books Count
+   int available = 1000;
+   int issued = 300;
+
+   // Database instance
+   DB db;
+
+   @Override
+   protected void onCreate(Bundle savedInstanceState) {
+       super.onCreate(savedInstanceState);
+       setContentView(R.layout.activity_main);
+
+       // Initialize views
+       editTextBookName = findViewById(R.id.editTextBookName);
+       editTextAuthor = findViewById(R.id.editTextAuthor);
+       editTextViewBookName = findViewById(R.id.editTextViewBookName);
+       editTextUpdateBookName = findViewById(R.id.editTextUpdateBookName);
+       editTextUpdateAuthor = findViewById(R.id.editTextUpdateAuthor);
+       editTextDeleteBookName = findViewById(R.id.editTextDeleteBookName);
+       editTextBorrowBookName = findViewById(R.id.editTextBorrowBookName);
+
+       buttonSave = findViewById(R.id.buttonSave);
+       buttonView = findViewById(R.id.buttonView);
+       buttonUpdate = findViewById(R.id.buttonUpdate);
+       buttonDelete = findViewById(R.id.buttonDelete);
+       buttonBorrow = findViewById(R.id.buttonBorrow);
+       buttonReturn = findViewById(R.id.buttonReturn);
+
+       textView = findViewById(R.id.textView);
+
+       // Initialize database
+       db = new DB(MainActivity.this);
+   }
+
+   // Save method
+   public void sav(View view) {
+       String bookName = editTextBookName.getText().toString();
+       String author = editTextAuthor.getText().toString();
+       db.save(bookName, author);
+       Toast.makeText(this, "Successfully Added Book!", Toast.LENGTH_LONG).show();
+   }
+
+   // Retrieve method
+   public void retrieve(View view) {
+       String bookName = editTextViewBookName.getText().toString();
+       String author = db.retrieve(bookName);
+       textView.setText(author);
+   }
+
+   // Update method
+   public void update(View view) {
+       String bookName = editTextUpdateBookName.getText().toString();
+       String author = editTextUpdateAuthor.getText().toString();
+       db.update(bookName, author);
+       Toast.makeText(this, "Successfully Updated Book!", Toast.LENGTH_LONG).show();
+   }
+
+   // Delete method
+   public void delete(View view) {
+       String bookName = editTextDeleteBookName.getText().toString();
+       db.delete(bookName);
+       Toast.makeText(this, "Successfully Deleted Book!", Toast.LENGTH_LONG).show();
+   }
+
+   // Borrow method
+   public void borrow(View view) {
+       available--;
+       issued++;
+       String str = "Available Books: " + available + "\nIssued Books: " + issued;
+       Toast.makeText(this, str, Toast.LENGTH_LONG).show();   }
+
+   // Return method
+   public void returnbook(View view) {
+       available++;
+       issued--;
+       String str = "Available Books: " + available + "\nIssued Books: " + issued;
+       Toast.makeText(this, str, Toast.LENGTH_LONG).show();
+   }}
+
+DB.java 
+package com.example.librarymgmtsystem;
+
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+
+public class DB extends SQLiteOpenHelper {
+
+   SQLiteDatabase sqLiteDatabase;
+   public DB(Context context) {
+       super(context, "data.db", null, 1);
+       sqLiteDatabase = getWritableDatabase();   }
+
+   @Override
+   public void onCreate(SQLiteDatabase db) {
+       db.execSQL("CREATE TABLE bookinsert (BookName TEXT, author TEXT)");   }
+
+   @Override
+   public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+       onCreate(db);   }
+
+   // Save book details
+   public void save(String bookName, String author) {
+       ContentValues cv = new ContentValues();
+       cv.put("BookName", bookName);
+       cv.put("author", author);
+       sqLiteDatabase.insert("bookinsert", null, cv);   }
+
+   // Retrieve book details
+   public String retrieve(String bookName) {
+       Cursor cursor = sqLiteDatabase.query("bookinsert", null, "BookName=?", new String[]{bookName}, null, null, null);
+       cursor.moveToFirst();
+       if (cursor.getCount() <= 0) {
+           return "Book does not exist";       }
+       String author = cursor.getString(cursor.getColumnIndex("author"));
+       cursor.close();
+       return author;   }
+
+   // Update book details
+   public void update(String bookName, String author) {
+       ContentValues values = new ContentValues();
+       values.put("author", author);
+       sqLiteDatabase.update("bookinsert", values, "BookName=?", new String[]{bookName});   }
+
+   // Delete book entry
+   public void delete(String bookName) {
+       sqLiteDatabase.delete("bookinsert", "BookName=?", new String[]{bookName});   }}
+
+AndroidManifest.xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+   xmlns:tools="http://schemas.android.com/tools"
+   package="com.example.librarymgmtsystem">
+
+   <application
+       android:allowBackup="true"
+       android:dataExtractionRules="@xml/data_extraction_rules"
+       android:fullBackupContent="@xml/backup_rules"
+       android:icon="@mipmap/ic_launcher"
+       android:label="@string/app_name"
+       android:roundIcon="@mipmap/ic_launcher_round"
+       android:supportsRtl="true"
+       android:theme="@style/Theme.LibraryMgmtSystem"
+       tools:targetApi="31">
+
+       <!-- Main Activity defined as the launcher activity -->
+       <activity android:name=".MainActivity"
+           android:exported="true"> <!-- Add this line -->
+           <intent-filter>
+               <action android:name="android.intent.action.MAIN" />
+               <category android:name="android.intent.category.LAUNCHER" />
+           </intent-filter>
+       </activity>
+
+   </application>
+
+</manifest>
+
+
+
+      
+
