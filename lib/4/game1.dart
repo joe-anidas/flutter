@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -13,7 +12,6 @@ class FlappyBirdGame extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       home: GameScreen(),
-     
     );
   }
 }
@@ -25,8 +23,8 @@ class GameScreen extends StatefulWidget {
   _GameScreenState createState() => _GameScreenState();
 }
 
-class _GameScreenState extends State<GameScreen> with SingleTickerProviderStateMixin {
-  double bnirdY = 0;
+class _GameScreenState extends State<GameScreen> {
+  double birdY = 0;
   double velocity = 0;
   double gravity = 0.005;
   bool isGameRunning = false;
@@ -36,11 +34,13 @@ class _GameScreenState extends State<GameScreen> with SingleTickerProviderStateM
     if (isGameRunning) return;
     isGameRunning = true;
     velocity = -0.02;
+
     gameLoop = Timer.periodic(const Duration(milliseconds: 16), (timer) {
       setState(() {
         velocity += gravity;
         birdY += velocity;
       });
+
       if (birdY > 1 || birdY < -1) {
         timer.cancel();
         isGameRunning = false;
@@ -88,20 +88,21 @@ class _GameScreenState extends State<GameScreen> with SingleTickerProviderStateM
                 ),
               ),
             ),
-            Align(
-              alignment: Alignment.topCenter,
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Text(
-                  "Tap to Play",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
+            if (!isGameRunning)
+              Align(
+                alignment: Alignment.topCenter,
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Text(
+                    "Tap to Play",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
-            ),
           ],
         ),
       ),
