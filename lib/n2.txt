@@ -1,0 +1,510 @@
+import 'package:flutter/material.dart';
+
+void main() => runApp(MyApp());
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(home: AlarmToggle());
+  }
+}
+
+class AlarmToggle extends StatefulWidget {
+  @override
+  _AlarmToggleState createState() => _AlarmToggleState();
+}
+
+class _AlarmToggleState extends State<AlarmToggle> {
+  bool isAlarmOn = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Alarm Toggle')),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            setState(() {
+              isAlarmOn = !isAlarmOn;
+            });
+          },
+          child: Text(isAlarmOn ? 'Alarm Off' : 'Alarm On'),
+        ),
+      ),
+    );
+  }
+}
+
+
+
+
+
+import 'package:flutter/material.dart';
+
+void main() => runApp(MyApp());
+
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  String output = "0";
+  double num1 = 0, num2 = 0;
+  String _output = "", operand = "";
+  
+  final buttons = [
+    "C", "⌫", "%", "/",
+    "7","8","9","*",
+    "4", "5", "6", "-",
+    "1", "2", "3", "+",
+    "+/-", "0", ".", "=",
+  ];
+
+  void buttonPressed(String text) {
+    setState(() {
+      if (text == "=") {
+        num2 = double.parse(_output);
+        if (operand == "+") _output = (num1 + num2).toString();
+        if (operand == "-") _output = (num1 - num2).toString();
+        if (operand == "*") _output = (num1 * num2).toString();
+        if (operand == "/") _output = (num1 / num2).toString();
+        num1 = 0;
+        num2 = 0;
+        operand = "";
+      } else if (text == "C") {
+        _output = "0";
+        num1 = 0;
+        num2 = 0;
+        operand = "";
+      } else if (["+", "-", "*", "/"].contains(text)) {
+        num1 = double.parse(_output);
+        operand = text;
+        _output = "0";
+      } else {
+        _output = _output == "0" ? text : _output + text;
+      }
+      output = _output;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(title: Text('Calculator')),
+        body: Column(
+          children: [
+            Expanded(
+              child: Container(
+                alignment: Alignment.bottomRight,
+                padding: EdgeInsets.all(24),
+                child: Text(output, style: TextStyle(fontSize: 48)),
+            ),
+            Expanded(
+              flex: 2,
+              child: GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 4),
+                itemCount: buttons.length,
+                itemBuilder: (context, index) {
+                  return ElevatedButton(
+                    onPressed: () => buttonPressed(buttons[index]),
+                    child: Text(buttons[index]),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+
+
+
+import 'package:flutter/material.dart';
+import 'dart:async';
+
+void main() => runApp(MaterialApp(home: Game()));
+
+class Game extends StatefulWidget {
+  @override
+  State<Game> createState() => _GameState();
+}
+
+class _GameState extends State<Game> {
+  double left = 100, top = 100;
+  double dx = 3, dy = 3;
+  late Timer timer;
+
+  @override
+  void initState() {
+    super.initState();
+    timer = Timer.periodic(Duration(milliseconds: 16), (_) {
+      setState(() {
+        left += dx;
+        top += dy;
+        if (left <= 0 || left >= MediaQuery.of(context).size.width - 50) dx = -dx;
+        if (top <= 0 || top >= MediaQuery.of(context).size.height - 50) dy = -dy;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    timer.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Ball Game")),
+      body: Stack(children: [
+        Positioned(
+          left: left,
+          top: top,
+          child: Container(
+            width: 50,
+            height: 50,
+            decoration: BoxDecoration(color: Colors.red, shape: BoxShape.circle),
+          ),
+        )
+      ]),
+    );
+  }
+}
+
+
+
+
+
+import 'package:flutter/material.dart';
+
+void main() => runApp(MaterialApp(home: MovieApp()));
+
+class MovieApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Movies")),
+      body: Padding(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                MovieCard("Inception", 4),
+                MovieCard("Interstellar", 5),
+              ],
+            ),
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                MovieCard("Dark Knight", 5),
+                MovieCard("Tenet", 3),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class MovieCard extends StatelessWidget {
+  final String title;
+  final int stars;
+
+  MovieCard(this.title, this.stars);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          width: 100,
+          height: 140,
+          color: Colors.grey,
+          child: Icon(Icons.movie, size: 50),
+        ),
+        SizedBox(height: 5),
+        Text(title, style: TextStyle(fontSize: 16)),
+        Row(
+          children: List.generate(5, (index) => 
+            Icon(index < stars ? Icons.star : Icons.star_border, 
+                 color: Colors.amber, size: 20),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+
+
+
+
+
+
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+void main() => runApp(MaterialApp(home: WebApp()));
+
+class WebApp extends StatefulWidget {
+  @override
+  State<WebApp> createState() => _WebAppState();
+}
+
+class _WebAppState extends State<WebApp> {
+  String title = "Loading...";
+
+  void getData() async {
+    try {
+      var res = await http
+          .get(Uri.parse('https://jsonplaceholder.typicode.com/posts/1'));
+      setState(() => title = jsonDecode(res.body)['title']);
+    } catch (e) {
+      setState(() => title = "Error loading data");
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getData();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("API Data")),
+      body: Center(child: Text(title)),
+    );
+  }
+}
+
+
+
+
+
+import 'package:flutter/material.dart';
+
+void main() => runApp(MaterialApp(home: ShopApp()));
+
+class ShopApp extends StatefulWidget {
+  @override
+  State<ShopApp> createState() => _ShopAppState();
+}
+
+class _ShopAppState extends State<ShopApp> {
+  int total = 0;
+
+  void addItem(int price) {
+    setState(() {
+      total += price;
+    });
+  }
+
+  void purchase() {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text("Purchase Complete"),
+        content: Text("Total: ₹$total"),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              setState(() => total = 0);
+            },
+            child: Text("OK"),
+          )
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Shop")),
+      body: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.all(16),
+            child: Text("Total: ₹$total", style: TextStyle(fontSize: 24)),
+          ),
+          Expanded(
+            child: ListView(
+              children: [
+                ProductItem("Shoes", 1500, addItem),
+                ProductItem("Watch", 2500, addItem),
+                ProductItem("Headphones", 1000, addItem),
+              ],
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.all(16),
+            child: ElevatedButton(
+              onPressed: total > 0 ? purchase : null,
+              child: Text("Purchase"),
+              style: ElevatedButton.styleFrom(
+                minimumSize: Size(double.infinity, 50),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ProductItem extends StatelessWidget {
+  final String name;
+  final int price;
+  final Function(int) onAdd;
+
+  ProductItem(this.name, this.price, this.onAdd);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: EdgeInsets.all(16),
+        child: Row(
+          children: [
+            Container(
+              width: 80,
+              height: 80,
+              color: Colors.grey,
+              child: Icon(Icons.shopping_bag),
+            ),
+            SizedBox(width: 16),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(name, style: TextStyle(fontSize: 18)),
+                Text("₹$price", style: TextStyle(fontSize: 16)),
+              ],
+            ),
+            Spacer(),
+            ElevatedButton(
+              onPressed: () => onAdd(price),
+              child: Text("Add to Cart"),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+
+
+
+import 'package:flutter/material.dart';
+
+void main() => runApp(MaterialApp(home: Hangman()));
+
+class Hangman extends StatefulWidget {
+  @override
+  _HangmanState createState() => _HangmanState();
+}
+
+class _HangmanState extends State<Hangman> {
+  final word = "FLUTTER";
+  final guessed = <String>{};
+
+  @override
+  Widget build(BuildContext context) {
+    String display = word.split('').map((c) => guessed.contains(c) ? c : "_").join(' ');
+    bool won = word.split('').every((c) => guessed.contains(c));
+    
+    return Scaffold(
+      appBar: AppBar(title: Text("Hangman")),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(display, style: TextStyle(fontSize: 30, letterSpacing: 2)),
+          if (won) Text("You Won!", style: TextStyle(color: Colors.green, fontSize: 24)),
+          SizedBox(height: 20),
+          Wrap(
+            spacing: 4,
+            runSpacing: 4,
+            children: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').map((letter) {
+              return ElevatedButton(
+                onPressed: guessed.contains(letter) || won
+                    ? null
+                    : () => setState(() => guessed.add(letter)),
+                child: Text(letter),
+                style: ElevatedButton.styleFrom(
+                  minimumSize: Size(36, 36),
+                ),
+              );
+            }).toList(),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+
+
+
+
+
+import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
+
+void main() => runApp(MaterialApp(home: MapPage()));
+
+class MapPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Simple Map')),
+      body: FlutterMap(
+        options: MapOptions(center: LatLng(13.0827, 80.2707), zoom: 13),
+        children: [
+          TileLayer(
+            urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            subdomains: ['a', 'b', 'c'],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+
+
+
+
+
+
+
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.2
+  http: ^0.13.3
+  flutter_map: ^6.1.0
+  latlong2: ^0.9.0
+  firebase_messaging: ^12.0.1
