@@ -65,7 +65,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _sendTestNotification() async {
     final response = await http.post(
-      Uri.parse('http://your-backend-url/send-notification'),
+      Uri.parse('http://localhost:3000/send-notification'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'message': 'Test notification', 'deviceToken': 'dummy-token'}),
     );

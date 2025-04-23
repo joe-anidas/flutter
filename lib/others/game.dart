@@ -13,7 +13,7 @@ class FlappyBirdGame extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       home: GameScreen(),
-      debugShowCheckedModeBanner: false,
+     
     );
   }
 }
@@ -26,7 +26,7 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> with SingleTickerProviderStateMixin {
-  double birdY = 0;
+  double bnirdY = 0;
   double velocity = 0;
   double gravity = 0.005;
   bool isGameRunning = false;
