@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-void main() => runApp(const MaterialApp(home: GameScreen()));
+void main() => runApp(const MaterialApp(home: Game2()));
 
-class GameScreen extends StatefulWidget {
-  const GameScreen({super.key});
+class Game2 extends StatefulWidget {
+  const Game2({super.key});
 
   @override
-  State<GameScreen> createState() => _GameScreenState();
+  State<Game2> createState() => _Game2State();
 }
 
-class _GameScreenState extends State<GameScreen> {
+class _Game2State extends State<Game2> {
   double birdY = 0, velocity = 0, gravity = 0.005;
   bool isRunning = false;
   Timer? loop;

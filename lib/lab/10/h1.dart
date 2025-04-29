@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-void main() => runApp(MaterialApp(home: Hangman()));
+void main() => runApp(MaterialApp(home: H1()));
 
-class Hangman extends StatefulWidget {
+class H1 extends StatefulWidget {
   @override
   _HangmanState createState() => _HangmanState();
 }
 
-class _HangmanState extends State<Hangman> {
+class _HangmanState extends State<H1> {
   final word = "HANGMAN", guessed = <String>{};
 
   @override

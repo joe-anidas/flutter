@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 void main() {
-  runApp(const FlappyBirdGame());
+  runApp(const Game1());
 }
 
-class FlappyBirdGame extends StatelessWidget {
-  const FlappyBirdGame({super.key});
+class Game1 extends StatelessWidget {
+  const Game1({super.key});
 
   @override
   Widget build(BuildContext context) {

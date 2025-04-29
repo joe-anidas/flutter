@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 void main() {
-  runApp(MyApp());
+  runApp(Alarm());
 }
-class MyApp extends StatelessWidget {
+class Alarm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

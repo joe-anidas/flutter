@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(CalculatorApp());
+  runApp(Calc2());
 }
 
-class CalculatorApp extends StatefulWidget {
+class Calc2 extends StatefulWidget {
   @override
   _CalculatorAppState createState() => _CalculatorAppState();
 }
 
-class _CalculatorAppState extends State<CalculatorApp> {
+class _CalculatorAppState extends State<Calc2> {
   String output = "0";
   String _output = "";
   double num1 = 0;

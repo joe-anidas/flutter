@@ -8,9 +8,9 @@ import 'dart:convert';
 //   http: ^0.13.6
 
 void main() {
-  runApp(MyApp());}
+  runApp(Http());}
 
-class MyApp extends StatelessWidget {
+class Http extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

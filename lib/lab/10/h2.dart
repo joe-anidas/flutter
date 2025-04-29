@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 
 void main() {
-  runApp(HangmanApp());
+  runApp(H2());
 }
 
-class HangmanApp extends StatelessWidget {
+class H2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

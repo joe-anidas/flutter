@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(ECommerceApp());}
+  runApp(Shop());}
 
-class ECommerceApp extends StatelessWidget {
+class Shop extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

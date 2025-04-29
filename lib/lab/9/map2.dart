@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
-void main() => runApp(MaterialApp(home: MapPage()));
+void main() => runApp(MaterialApp(home: Map2()));
 
-class MapPage extends StatelessWidget {
+class Map2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

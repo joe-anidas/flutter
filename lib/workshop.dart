@@ -1,15 +1,23 @@
 import 'package:flutter/material.dart';
 
-// Combined imports
-import 'workshop.dart';
-import 'lab.dart';
+// Workshop
+import 'workshop/gpt/gpt1.dart';
+import 'workshop/gpt/gpt2.dart';
+import 'workshop/gpt/gpt3.dart';
+import 'workshop/gpt/gpt4.dart';
+import 'workshop/journal/journal1.dart';
+import 'workshop/journal/journal2.dart';
+import 'workshop/journal/journal3.dart';
+import 'workshop/journal/journal4.dart';
+import 'workshop/todo/todo.dart';
+import 'workshop/todo/todoserver.dart';
 
 void main() {
-  runApp(const App());
+  runApp(const Workshop());
 }
 
-class App extends StatelessWidget {
-  const App({super.key});
+class Workshop extends StatelessWidget {
+  const Workshop({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +40,7 @@ class App extends StatelessWidget {
         fontFamily: 'Poppins',
       ),
       themeMode: ThemeMode.system,
-      home: const DemosGridPage(),
+      home: const DemosListPage(),
     );
   }
 }
@@ -51,21 +59,28 @@ class DemoItem {
   });
 }
 
-class DemosGridPage extends StatefulWidget {
-  const DemosGridPage({super.key});
+class DemosListPage extends StatefulWidget {
+  const DemosListPage({super.key});
 
   @override
-  State<DemosGridPage> createState() => _DemosGridPageState();
+  State<DemosListPage> createState() => _DemosListPageState();
 }
 
-class _DemosGridPageState extends State<DemosGridPage> {
+class _DemosListPageState extends State<DemosListPage> {
   bool isSearching = false;
   String searchText = '';
 
   final List<DemoItem> demoItems = [
-    // Workshop demos
-    DemoItem(name: 'workshop.dart', widget: Workshop(), emoji: "🛠️", category: "Workshop"),
-    DemoItem(name: 'lab.dart', widget: Lab(), emoji: "🔬", category: "Lab"),
+    DemoItem(name: 'gpt1.dart', widget: GPTApp1(), emoji: "🤖", category: "Workshop"),
+    DemoItem(name: 'gpt2.dart', widget: GPTApp2(), emoji: "🤖", category: "Workshop"),
+    DemoItem(name: 'gpt3.dart', widget: GPTApp3(), emoji: "🤖", category: "Workshop"),
+    DemoItem(name: 'gpt4.dart', widget: GPTApp4(), emoji: "🤖", category: "Workshop"),
+    DemoItem(name: 'journal1.dart', widget: JournalApp1(), emoji: "📝", category: "Workshop"),
+    DemoItem(name: 'journal2.dart', widget: JournalApp2(), emoji: "📝", category: "Workshop"),
+    DemoItem(name: 'journal3.dart', widget: JournalApp3(), emoji: "📝", category: "Workshop"),
+    DemoItem(name: 'journal4.dart', widget: JournalApp4(), emoji: "📝", category: "Workshop"),
+    DemoItem(name: 'todo.dart', widget: Todo(), emoji: "✅", category: "Workshop"),
+    DemoItem(name: 'todoserver.dart', widget: TodoServer(), emoji: "✅", category: "Workshop"),
   ];
 
   @override
@@ -155,7 +170,7 @@ class _DemosGridPageState extends State<DemosGridPage> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 16),
                 Expanded(
                   child: filteredItems.isEmpty
                       ? Center(
@@ -178,17 +193,11 @@ class _DemosGridPageState extends State<DemosGridPage> {
                             ],
                           ),
                         )
-                      : GridView.builder(
-                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 16,
-                            mainAxisSpacing: 16,
-                            childAspectRatio: 0.9,
-                          ),
+                      : ListView.builder(
                           itemCount: filteredItems.length,
                           itemBuilder: (context, index) {
                             final item = filteredItems[index];
-                            return DemoCard(
+                            return DemoListItem(
                               item: item,
                               onTap: () {
                                 Navigator.push(
@@ -209,11 +218,11 @@ class _DemosGridPageState extends State<DemosGridPage> {
   }
 }
 
-class DemoCard extends StatelessWidget {
+class DemoListItem extends StatelessWidget {
   final DemoItem item;
   final VoidCallback onTap;
 
-  const DemoCard({
+  const DemoListItem({
     super.key,
     required this.item,
     required this.onTap,
@@ -221,71 +230,58 @@ class DemoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.9),
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.15),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(16),
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: onTap,
-              splashColor: Colors.deepPurple.withOpacity(0.3),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            children: [
+              Container(
+                width: 50,
+                height: 50,
+                decoration: BoxDecoration(
+                  color: Colors.deepPurple.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Center(
+                  child: Text(
+                    item.emoji,
+                    style: const TextStyle(fontSize: 28),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: Colors.deepPurple.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Text(
-                        item.category,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.deepPurple,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Hero(
-                      tag: 'emoji_${item.name}',
-                      child: Text(
-                        item.emoji,
-                        style: const TextStyle(fontSize: 56),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
                     Text(
                       item.name,
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
-                        color: Colors.black87,
                       ),
-                      textAlign: TextAlign.center,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      item.category,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey.shade600,
+                      ),
                     ),
                   ],
                 ),
               ),
-            ),
+              const Icon(Icons.chevron_right, color: Colors.grey),
+            ],
           ),
         ),
       ),
